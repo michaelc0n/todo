@@ -12,8 +12,12 @@ import (
 	"github.com/gofiber/template/html"
 )
 
+type todo struct {
+	Item string
+}
+
 func main() {
-	connStr := "postgresql://username:password@localhost/todos?sslmode=disable"
+	connStr := "postgresql://mruser:mrpass@localhost/todos?sslmode=disable"
 	// Connect to database
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -73,11 +77,30 @@ func indexHandler(c *fiber.Ctx, db *sql.DB) error {
 }
 
 func postHandler(c *fiber.Ctx, db *sql.DB) error {
-	return c.SendString("Hello")
+	newTodo := todo{}
+	if err := c.BodyParser(&newTodo); err != nil {
+		log.Printf("an error occured: %v", err)
+		return c.SendString(err.Error())
+	}
+	fmt.Printf("%v", newTodo)
+	if newTodo.Item != "" {
+		_, err := db.Exec("INSERT into todos VALUES ($1)", newTodo.Item)
+		if err != nil {
+			log.Fatalf("an error occured while executing query: %v", err)
+		}
+	}
+
+	return c.Redirect("/")
 }
+
 func putHandler(c *fiber.Ctx, db *sql.DB) error {
-	return c.SendString("Hello")
+	oldItem := c.Query("olditem")
+	newItem := c.Query("newitem")
+	db.Exec("UPDATE todos SET item=$1 WHERE item=$2", newItem, oldItem)
+	return c.Redirect("/")
 }
 func deleteHandler(c *fiber.Ctx, db *sql.DB) error {
-	return c.SendString("Hello")
+	todoToDelete := c.Query("item")
+	db.Exec("DELETE from todos WHERE item=$1", todoToDelete)
+	return c.SendString("deleted")
 }
