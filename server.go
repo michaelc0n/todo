@@ -70,7 +70,6 @@ func indexHandler(c *fiber.Ctx, db *sql.DB) error {
 		rows.Scan(&res)
 		todos = append(todos, res)
 	}
-
 	return c.Render("index", fiber.Map{
 		"Todos": todos,
 	})
@@ -94,13 +93,15 @@ func postHandler(c *fiber.Ctx, db *sql.DB) error {
 }
 
 func putHandler(c *fiber.Ctx, db *sql.DB) error {
-	oldItem := c.Query("olditem")
-	newItem := c.Query("newitem")
-	db.Exec("UPDATE todos SET item=$1 WHERE item=$2", newItem, oldItem)
+	olditem := c.Query("olditem")
+	newitem := c.Query("newitem")
+	db.Exec("UPDATE todos SET item=$1 WHERE item=$2", newitem, olditem)
 	return c.Redirect("/")
 }
+
 func deleteHandler(c *fiber.Ctx, db *sql.DB) error {
 	todoToDelete := c.Query("item")
+	fmt.Println(todoToDelete)
 	db.Exec("DELETE from todos WHERE item=$1", todoToDelete)
 	return c.SendString("deleted")
 }

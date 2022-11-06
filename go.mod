@@ -3,7 +3,6 @@ module github.com/michaelc0n/todo
 go 1.18
 
 require (
-	github.com/cosmtrek/air v1.40.4
 	github.com/gofiber/fiber/v2 v2.39.0
 	github.com/gofiber/template v1.7.1
 	github.com/lib/pq v1.10.7
@@ -11,6 +10,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/cosmtrek/air v1.40.4 // indirect
 	github.com/creack/pty v1.1.11 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
